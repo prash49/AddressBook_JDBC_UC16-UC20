@@ -25,6 +25,22 @@ public class AddressBookRepo {
         return connection;
     }
 
+    public static void insertData(Contacts add) {
+        try (Connection connection = getConnection()) {
+            Statement statement = connection.createStatement();
+            String sql = "insert into addressBook(firstname,lastname,address,city,state,zip,phoneNumber,email,bookName,contactType,date_added)" +
+                    "values('" + add.getFirstName() + "','" + add.getLastName() + "','" + add.getAddress() + "','" + add.getCity() +
+                    "','" + add.getState() + "','" + add.getZip() + "','" + add.getPhoneNumber() + "','" +
+                    add.getEmailId() + "','" + add.getBookName() + "','" + add.getContactType() + "','" + add.getDateAdded() + "');";
+            int result = statement.executeUpdate(sql);
+            if (result == 1) {
+                System.out.println("Contact Added successfully ...");
+            } else System.out.println("Data Not inserted");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<Contacts> retrieveData() {
         ResultSet resultSet = null;
         List<Contacts> addressBookList = new ArrayList<Contacts>();
