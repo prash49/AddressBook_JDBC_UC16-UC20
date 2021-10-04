@@ -55,14 +55,14 @@ public class AddressBookRepo {
 
     }
 
-    public void updateCityByZip(String city, int zip) {
+    public void updateCityByZip(String address, String city, String state, int zip, int srNo) {
         try (Connection connection = getConnection()) {
             Statement statement = connection.createStatement();
-            String query = "Update addressBook set city=" + "'" + city + "'" + " where zip=" + zip + ";";
+            String query = "Update addressBook set address=" + "'" + address + "'" + ", " + "city=" +"'" + city + "'" + ", " + "state=" + "'" + state + "'" + ", " + "zip=" + zip + " where srNo=" + srNo + ";";
             int result = statement.executeUpdate(query);
             System.out.println(result);
             if (result > 0) {
-                System.out.println("City Updated Successfully");
+                System.out.println("Address Updated Successfully");
             }
         } catch (SQLException e) {
             e.printStackTrace();

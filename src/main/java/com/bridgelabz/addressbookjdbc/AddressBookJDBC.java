@@ -10,7 +10,7 @@ public class AddressBookJDBC {
 
         boolean exit = false;
         while (!exit) {
-            System.out.println(" Press\n 1 ->  Retrieve data\n 2 -> Update city  by Firstname\n 3 -> exit");
+            System.out.println(" Press\n 1 ->  Retrieve data\n 2 -> Update Address,city,state,zip  by srno\n 3 -> exit");
             int choice = scanner.nextInt();
             switch (choice) {
                 case 1:
@@ -36,7 +36,7 @@ public class AddressBookJDBC {
 
     private static void updateCity() {
         AddressBookRepo addressBookRepo = new AddressBookRepo();
-        System.out.println("Enter the city and zip to Update");
-        addressBookRepo.updateCityByZip(scanner.next(), scanner.nextInt());
+        System.out.println("Enter the address,city,state, zip and Serial Number  to Update");
+        addressBookRepo.updateCityByZip(scanner.next(), scanner.next(), scanner.next(), scanner.nextInt(), scanner.nextInt());
     }
 }
