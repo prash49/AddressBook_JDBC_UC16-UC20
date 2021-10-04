@@ -1,6 +1,7 @@
 package com.bridgelabz.addressbookjdbc;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,10 +56,10 @@ public class AddressBookRepo {
 
     }
 
-    public void updateCityByZip(String address, String city, String state, int zip, int srNo) {
+    public void updateAddress(String address, String city, String state, int zip, int srNo) {
         try (Connection connection = getConnection()) {
             Statement statement = connection.createStatement();
-            String query = "Update addressBook set address=" + "'" + address + "'" + ", " + "city=" +"'" + city + "'" + ", " + "state=" + "'" + state + "'" + ", " + "zip=" + zip + " where srNo=" + srNo + ";";
+            String query = "Update addressBook set address=" + "'" + address + "'" + ", " + "city=" + "'" + city + "'" + ", " + "state=" + "'" + state + "'" + ", " + "zip=" + zip + " where srNo=" + srNo + ";";
             int result = statement.executeUpdate(query);
             System.out.println(result);
             if (result > 0) {
@@ -68,5 +69,35 @@ public class AddressBookRepo {
             e.printStackTrace();
         }
 
+    }
+
+    public List<Contacts> findAllForParticularDate(LocalDate date) {
+        ResultSet resultSet = null;
+        List<Contacts> addressBookList = new ArrayList<Contacts>();
+        try (Connection connection = getConnection()) {
+            Statement statement = connection.createStatement();
+            String sql = "select * from AddressBook where date_added between cast(' "+ date + "'" +" as date)  and date(now());";
+            resultSet = statement.executeQuery(sql);
+            int count = 0;
+            while (resultSet.next()) {
+                Contacts contactInfo = new Contacts();
+                contactInfo.setFirstName(resultSet.getString("firstName"));
+                contactInfo.setLastName(resultSet.getString("Lastname"));
+                contactInfo.setAddress(resultSet.getString("address"));
+                contactInfo.setCity(resultSet.getString("city"));
+                contactInfo.setState(resultSet.getString("state"));
+                contactInfo.setZip(resultSet.getInt("zip"));
+                contactInfo.setPhoneNumber(resultSet.getString("phoneNumber"));
+                contactInfo.setEmailId(resultSet.getString("email"));
+                contactInfo.setBookName(resultSet.getString("bookName"));
+                contactInfo.setContactType(resultSet.getString("contactType"));
+                contactInfo.setDateAdded(resultSet.getDate("Date_added").toLocalDate());
+
+                addressBookList.add(contactInfo);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return addressBookList;
     }
 }
