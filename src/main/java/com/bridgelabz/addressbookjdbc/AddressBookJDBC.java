@@ -10,12 +10,16 @@ public class AddressBookJDBC {
 
         boolean exit = false;
         while (!exit) {
-            System.out.println(" Press\n 1 ->  Retrieve data\n 2 -> Exit");
-            switch (scanner.nextInt()) {
+            System.out.println(" Press\n 1 ->  Retrieve data\n 2 -> Update city  by Firstname\n 3 -> exit");
+            int choice = scanner.nextInt();
+            switch (choice) {
                 case 1:
                     retrieveData();
                     break;
                 case 2:
+                    updateCity();
+                    break;
+                case 3:
                     exit = true;
             }
         }
@@ -28,5 +32,11 @@ public class AddressBookJDBC {
         ) {
             System.out.println(employee + "\n");
         }
+    }
+
+    private static void updateCity() {
+        AddressBookRepo addressBookRepo = new AddressBookRepo();
+        System.out.println("Enter the city and zip to Update");
+        addressBookRepo.updateCityByZip(scanner.next(), scanner.nextInt());
     }
 }

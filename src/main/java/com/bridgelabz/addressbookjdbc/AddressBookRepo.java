@@ -7,7 +7,7 @@ import java.util.List;
 public class AddressBookRepo {
     Connection connection;
 
-    private Connection getConnection() {
+    private static Connection getConnection() {
         String url = "jdbc:mysql://127.0.0.1:3306/AddressBookService";
         String username = "root";
         String password = "rootpassword";
@@ -52,6 +52,21 @@ public class AddressBookRepo {
             System.out.println(e);
         }
         return addressBookList;
+
+    }
+
+    public void updateCityByZip(String city, int zip) {
+        try (Connection connection = getConnection()) {
+            Statement statement = connection.createStatement();
+            String query = "Update addressBook set city=" + "'" + city + "'" + " where zip=" + zip + ";";
+            int result = statement.executeUpdate(query);
+            System.out.println(result);
+            if (result > 0) {
+                System.out.println("City Updated Successfully");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 }
