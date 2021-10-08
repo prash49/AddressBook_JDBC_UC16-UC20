@@ -25,66 +25,100 @@ public class AddressBookRepo {
         return connection;
     }
 
-    public static void insertData(Contacts add) {
-        try (Connection connection = getConnection()) {
-            Statement statement = connection.createStatement();
-            String sql = "insert into addressBook(firstname,lastname,address,city,state,zip,phoneNumber,email,bookName,contactType,date_added)" +
-                    "values('" + add.getFirstName() + "','" + add.getLastName() + "','" + add.getAddress() + "','" + add.getCity() +
-                    "','" + add.getState() + "','" + add.getZip() + "','" + add.getPhoneNumber() + "','" +
-                    add.getEmailId() + "','" + add.getBookName() + "','" + add.getContactType() + "','" + add.getDateAdded() + "');";
-            int result = statement.executeUpdate(sql);
-            if (result == 1) {
-                System.out.println("Contact Added successfully ...");
-            } else System.out.println("Data Not inserted");
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public static void insertData(Contacts add) throws SQLException {
+        Connection connection = getConnection();
+        try {
+            if (connection != null) {
+                connection.setAutoCommit(false);
+                Statement statement = connection.createStatement();
+                String sql = "insert into addressBook(firstname,lastname,address,city,state,zip,phoneNumber,email,bookName,contactType,date_added)" +
+                        "values('" + add.getFirstName() + "','" + add.getLastName() + "','" + add.getAddress() + "','" + add.getCity() +
+                        "','" + add.getState() + "','" + add.getZip() + "','" + add.getPhoneNumber() + "','" +
+                        add.getEmailId() + "','" + add.getBookName() + "','" + add.getContactType() + "','" + add.getDateAdded() + "');";
+                int result = statement.executeUpdate(sql);
+                connection.commit();
+                if (result > 0) {
+                    System.out.println("Contact Inserted");
+                }
+                connection.setAutoCommit(true);
+            }
+        } catch (SQLException sqlException) {
+            System.out.println("Insertion Rollbacked");
+            connection.rollback();
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
         }
     }
 
-    public List<Contacts> retrieveData() {
+    public List<Contacts> retrieveData() throws SQLException {
         ResultSet resultSet = null;
         List<Contacts> addressBookList = new ArrayList<Contacts>();
-        try (Connection connection = getConnection()) {
-            Statement statement = connection.createStatement();
-            String sql = "select * from AddressBook";
-            resultSet = statement.executeQuery(sql);
-            int count = 0;
-            while (resultSet.next()) {
-                Contacts contactInfo = new Contacts();
-                contactInfo.setFirstName(resultSet.getString("firstName"));
-                contactInfo.setLastName(resultSet.getString("Lastname"));
-                contactInfo.setAddress(resultSet.getString("address"));
-                contactInfo.setCity(resultSet.getString("city"));
-                contactInfo.setState(resultSet.getString("state"));
-                contactInfo.setZip(resultSet.getInt("zip"));
-                contactInfo.setPhoneNumber(resultSet.getString("phoneNumber"));
-                contactInfo.setEmailId(resultSet.getString("email"));
-                contactInfo.setBookName(resultSet.getString("bookName"));
-                contactInfo.setContactType(resultSet.getString("contactType"));
-                contactInfo.setDateAdded(resultSet.getDate("Date_added").toLocalDate());
+        Connection connection = getConnection();
+        try {
+            if (connection != null) {
+                connection.setAutoCommit(false);
+                Statement statement = connection.createStatement();
+                String sql = "select * from AddressBook";
+                resultSet = statement.executeQuery(sql);
+                boolean success = false;
+                while (resultSet.next()) {
+                    Contacts contactInfo = new Contacts();
+                    contactInfo.setFirstName(resultSet.getString("firstName"));
+                    contactInfo.setLastName(resultSet.getString("Lastname"));
+                    contactInfo.setAddress(resultSet.getString("address"));
+                    contactInfo.setCity(resultSet.getString("city"));
+                    contactInfo.setState(resultSet.getString("state"));
+                    contactInfo.setZip(resultSet.getInt("zip"));
+                    contactInfo.setPhoneNumber(resultSet.getString("phoneNumber"));
+                    contactInfo.setEmailId(resultSet.getString("email"));
+                    contactInfo.setBookName(resultSet.getString("bookName"));
+                    contactInfo.setContactType(resultSet.getString("contactType"));
+                    contactInfo.setDateAdded(resultSet.getDate("Date_added").toLocalDate());
 
-                addressBookList.add(contactInfo);
+                    success = addressBookList.add(contactInfo);
+                    connection.commit();
+                    if (success == true) {
+                        System.out.println("Contact Inserted");
+                    }
+                    connection.setAutoCommit(true);
+                }
             }
-        } catch (SQLException e) {
-            System.out.println(e);
+        } catch (SQLException sqlException) {
+            System.out.println("Insertion Rollbacked");
+            connection.rollback();
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
         }
         return addressBookList;
-
     }
 
-    public void updateAddress(String address, String city, String state, int zip, int srNo) {
-        try (Connection connection = getConnection()) {
+    public void updateAddress(String address, String city, String state, int zip, int srNo) throws SQLException {
+        Connection connection = getConnection();
+        try {
+            if (connection != null) {
+                connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             String query = "Update addressBook set address=" + "'" + address + "'" + ", " + "city=" + "'" + city + "'" + ", " + "state=" + "'" + state + "'" + ", " + "zip=" + zip + " where srNo=" + srNo + ";";
             int result = statement.executeUpdate(query);
             System.out.println(result);
-            if (result > 0) {
-                System.out.println("Address Updated Successfully");
+                connection.commit();
+                if (result > 0) {
+                    System.out.println("Contact Inserted");
+                }
+                connection.setAutoCommit(true);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException sqlException) {
+            System.out.println("Insertion Rollbacked");
+            connection.rollback();
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
         }
-
     }
 
     public List<Contacts> findAllForParticularDate(LocalDate date) {

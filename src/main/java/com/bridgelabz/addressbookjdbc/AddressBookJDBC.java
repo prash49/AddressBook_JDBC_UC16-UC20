@@ -1,5 +1,6 @@
 package com.bridgelabz.addressbookjdbc;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
@@ -7,7 +8,7 @@ import java.util.Scanner;
 public class AddressBookJDBC {
     static Scanner scanner = new Scanner(System.in);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
         boolean exit = false;
         while (!exit) {
@@ -39,7 +40,7 @@ public class AddressBookJDBC {
     }
 
 
-    private static void retrieveData() {
+    private static void retrieveData() throws SQLException {
         AddressBookRepo addressBookRepo = new AddressBookRepo();
         List<Contacts> employeeInfoList = addressBookRepo.retrieveData();
         for (Contacts employee : employeeInfoList
@@ -48,7 +49,7 @@ public class AddressBookJDBC {
         }
     }
 
-    private static void update() {
+    private static void update() throws SQLException {
         AddressBookRepo addressBookRepo = new AddressBookRepo();
         System.out.println("Enter the address,city,state, zip and Serial Number  to Update");
         addressBookRepo.updateAddress(scanner.next(), scanner.next(), scanner.next(), scanner.nextInt(), scanner.nextInt());
@@ -65,7 +66,7 @@ public class AddressBookJDBC {
         }
     }
 
-    private static void retrieveCountByCityOrState() {
+    private static void retrieveCountByCityOrState() throws SQLException {
         AddressBookRepo addressBookRepo = new AddressBookRepo();
         System.out.println("Enter 1 -> Contacts count by City\n" +
                 "2 -> Contacts count by State");
@@ -87,7 +88,7 @@ public class AddressBookJDBC {
 
     }
 
-    private static void addNewContact() {
+    private static void addNewContact() throws SQLException {
         Contacts add = new Contacts();
         System.out.println("Enter First Name:");
         add.setFirstName(scanner.next());
